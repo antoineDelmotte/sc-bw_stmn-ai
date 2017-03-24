@@ -1,10 +1,11 @@
-#include <BWAPI.h>
+﻿#include <BWAPI.h>
 #include <BWAPI/Client.h>
 
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <string>
+#include <BehaviorTree.h>
 
 using namespace BWAPI;
 
