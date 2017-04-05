@@ -5,7 +5,6 @@
 #include <thread>
 #include <chrono>
 #include <string>
-#include <BehaviorTree.h>
 
 using namespace BWAPI;
 

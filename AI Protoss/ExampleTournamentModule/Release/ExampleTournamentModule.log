@@ -1,4 +1,6 @@
-﻿     Creating library D:\1. Travaux en cours\IA Starcraft\AI Protoss\Release\ExampleTournamentModule.lib and object D:\1. Travaux en cours\IA Starcraft\AI Protoss\Release\ExampleTournamentModule.exp
+﻿  Dll.cpp
+  ExampleTournamentModule.cpp
+     Creating library D:\1. Travaux en cours\IA Starcraft\AI Protoss\Release\ExampleTournamentModule.lib and object D:\1. Travaux en cours\IA Starcraft\AI Protoss\Release\ExampleTournamentModule.exp
   Generating code
   Finished generating code
   ExampleTournamentModule.vcxproj -> D:\1. Travaux en cours\IA Starcraft\AI Protoss\Release\ExampleTournamentModule.dll

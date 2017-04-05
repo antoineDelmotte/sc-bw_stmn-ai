@@ -1,11 +1,18 @@
 #include "ExampleAIModule.h"
 #include <iostream>
+#include "../Worker.h"
+#include "../Master.h"
 
 using namespace BWAPI;
 using namespace Filter;
 
+Master* master;
+
 void ExampleAIModule::onStart()
 {
+
+	master = new Master();
+
   // Hello World!
   Broodwar->sendText("Hello world!");
 
@@ -76,6 +83,19 @@ void ExampleAIModule::onFrame()
   if ( Broodwar->getFrameCount() % Broodwar->getLatencyFrames() != 0 )
     return;
 
+
+
+
+  master->Update();
+
+
+
+
+  for (Worker* w : Worker::Workers)
+  {
+	  w->Update();
+  }
+
   // Iterate through all the units that we own
   for (auto &u : Broodwar->self()->getUnits())
   {
@@ -99,33 +119,7 @@ void ExampleAIModule::onFrame()
 
     // Finally make the unit do some stuff!
 
-
-    // If the unit is a worker unit
-    if ( u->getType().isWorker() )
-    {
-      // if our worker is idle
-      if ( u->isIdle() )
-      {
-        // Order workers carrying a resource to return them to the center,
-        // otherwise find a mineral patch to harvest.
-        if ( u->isCarryingGas() || u->isCarryingMinerals() )
-        {
-          u->returnCargo();
-        }
-        else if ( !u->getPowerUp() )  // The worker cannot harvest anything if it
-        {                             // is carrying a powerup such as a flag
-          // Harvest from the nearest mineral patch or gas refinery
-          if ( !u->gather( u->getClosestUnit( IsMineralField || IsRefinery )) )
-          {
-            // If the call fails, then print the last error message
-            Broodwar << Broodwar->getLastError() << std::endl;
-          }
-
-        } // closure: has no powerup
-      } // closure: if idle
-
-    }
-    else if ( u->getType().isResourceDepot() ) // A resource depot is a Command Center, Nexus, or Hatchery
+    if ( u->getType().isResourceDepot() ) // A resource depot is a Command Center, Nexus, or Hatchery
     {
 
       // Order the depot to construct more workers! But only when it is idle.
@@ -262,6 +256,15 @@ void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
       seconds %= 60;
       Broodwar->sendText("%.2d:%.2d: %s creates a %s", minutes, seconds, unit->getPlayer()->getName().c_str(), unit->getType().c_str());
     }
+  }
+  else
+  {
+	  //CODE HERE PLZ
+	  if (unit->getType().isWorker())
+	  {
+		  Worker::Workers.push_back(new Worker(unit));
+	  }
+
   }
 }
 

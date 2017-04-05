@@ -11,45 +11,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleTournamentModule", "ExampleTournamentModule\ExampleTournamentModule.vcxproj", "{8D2682F5-7022-40E6-95E3-7257D43639F1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BehaviorTree", "BehaviorTree", "{C964C0FB-449D-45F7-801A-AF86A1D0C060}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{97E736CB-19E4-418C-8F0A-88D856A6FB87}"
 	ProjectSection(SolutionItems) = preProject
-		BehaviorTree\include\ActionNode.h = BehaviorTree\include\ActionNode.h
-		BehaviorTree\include\BehaviorTree.h = BehaviorTree\include\BehaviorTree.h
-		BehaviorTree\include\ConditionNode.h = BehaviorTree\include\ConditionNode.h
-		BehaviorTree\include\ControlNode.h = BehaviorTree\include\ControlNode.h
-		BehaviorTree\include\DecoratorNegationNode.h = BehaviorTree\include\DecoratorNegationNode.h
-		BehaviorTree\include\DecoratorRetryNode.h = BehaviorTree\include\DecoratorRetryNode.h
-		BehaviorTree\include\Draw.h = BehaviorTree\include\Draw.h
-		BehaviorTree\include\Exceptions.h = BehaviorTree\include\Exceptions.h
-		BehaviorTree\include\LeafNode.h = BehaviorTree\include\LeafNode.h
-		BehaviorTree\include\NodeSemaphore.h = BehaviorTree\include\NodeSemaphore.h
-		BehaviorTree\include\ParallelNode.h = BehaviorTree\include\ParallelNode.h
-		BehaviorTree\include\SelectorNode.h = BehaviorTree\include\SelectorNode.h
-		BehaviorTree\include\SelectorStarNode.h = BehaviorTree\include\SelectorStarNode.h
-		BehaviorTree\include\SequenceNode.h = BehaviorTree\include\SequenceNode.h
-		BehaviorTree\include\SequenceStarNode.h = BehaviorTree\include\SequenceStarNode.h
-		BehaviorTree\include\TreeNode.h = BehaviorTree\include\TreeNode.h
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0198BC3C-9653-4C88-BEE2-C0E67CC84FBC}"
-	ProjectSection(SolutionItems) = preProject
-		BehaviorTree\src\ActionNode.cpp = BehaviorTree\src\ActionNode.cpp
-		BehaviorTree\src\BehaviorTree.cpp = BehaviorTree\src\BehaviorTree.cpp
-		BehaviorTree\src\ConditionNode.cpp = BehaviorTree\src\ConditionNode.cpp
-		BehaviorTree\src\ControlNode.cpp = BehaviorTree\src\ControlNode.cpp
-		BehaviorTree\src\DecoratorNegationNode.cpp = BehaviorTree\src\DecoratorNegationNode.cpp
-		BehaviorTree\src\DecoratorRetryNode.cpp = BehaviorTree\src\DecoratorRetryNode.cpp
-		BehaviorTree\src\Draw.cpp = BehaviorTree\src\Draw.cpp
-		BehaviorTree\src\Exceptions.cpp = BehaviorTree\src\Exceptions.cpp
-		BehaviorTree\src\LeafNode.cpp = BehaviorTree\src\LeafNode.cpp
-		BehaviorTree\src\NodeSemaphore.cpp = BehaviorTree\src\NodeSemaphore.cpp
-		BehaviorTree\src\ParallelNode.cpp = BehaviorTree\src\ParallelNode.cpp
-		BehaviorTree\src\SelectorNode.cpp = BehaviorTree\src\SelectorNode.cpp
-		BehaviorTree\src\SelectorStarNode.cpp = BehaviorTree\src\SelectorStarNode.cpp
-		BehaviorTree\src\SequenceNode.cpp = BehaviorTree\src\SequenceNode.cpp
-		BehaviorTree\src\SequenceStarNode.cpp = BehaviorTree\src\SequenceStarNode.cpp
-		BehaviorTree\src\TreeNode.cpp = BehaviorTree\src\TreeNode.cpp
+		BehaviorTree\bt.hpp = BehaviorTree\bt.hpp
 	EndProjectSection
 EndProject
 Global
@@ -76,9 +39,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{97E736CB-19E4-418C-8F0A-88D856A6FB87} = {C964C0FB-449D-45F7-801A-AF86A1D0C060}
-		{0198BC3C-9653-4C88-BEE2-C0E67CC84FBC} = {C964C0FB-449D-45F7-801A-AF86A1D0C060}
 	EndGlobalSection
 EndGlobal
