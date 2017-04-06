@@ -2,20 +2,20 @@
 #include <../BehaviorTree/bt.hpp>
 #include <BWAPI.h>
 #include <BWAPI/Client.h>
+#include <../ExampleAIModule/StarcraftUnit.h>
 
 
 
-class Worker
+class Worker : public StarcraftUnit
 {
 public:
-	static std::list<Worker*> Workers;
+	static std::vector<Worker*> Workers;
 	Worker(BWAPI::Unit u);
 
 	void Update();
 	~Worker();
 
 private :
-	BWAPI::Unit m_unit;
 	bool isExploring;
 	//bt::BehaviorTree behaviorTree;
 };

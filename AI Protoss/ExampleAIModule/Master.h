@@ -1,17 +1,29 @@
 #pragma once
 #include <BWAPI.h>
 #include <BWAPI/Client.h>
+#include <../ExampleAIModule/StarcraftUnit.h>
+
+struct MasterOrder
+{
+public:
+	MasterOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position);
+
+	BWAPI::Orders::Enum::Enum m_type;
+	BWAPI::Position m_position;
+
+};
+
 
 class Master
 {
 public:
-	enum ORDER { GET_MINERAL, EXPLORE };
-	static std::list<ORDER> Orders;
-	static bool FindOrder(Master::ORDER order);
+	static std::vector<MasterOrder> Orders;
+	static bool FindOrder(BWAPI::Orders::Enum::Enum order, MasterOrder* findOrder);
 
 	Master();
 
 	void Update();
 	~Master();
 };
+
 

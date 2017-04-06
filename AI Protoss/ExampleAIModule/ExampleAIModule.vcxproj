@@ -98,12 +98,14 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files %28x86%29\BWAPI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="Source\ExampleAIModule.cpp" />
+    <ClCompile Include="StarcraftUnit.cpp" />
     <ClCompile Include="W3Node.cpp" />
     <ClCompile Include="Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Master.h" />
     <ClInclude Include="Source\ExampleAIModule.h" />
+    <ClInclude Include="StarcraftUnit.h" />
     <ClInclude Include="W3Node.h" />
     <ClInclude Include="Worker.h" />
   </ItemGroup>

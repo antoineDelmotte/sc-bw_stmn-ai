@@ -4,15 +4,16 @@
 
 
 
-std::list<Master::ORDER> Master::Orders;
+std::vector<MasterOrder> Master::Orders;
 //Find order and delete it from the list
-bool Master::FindOrder(Master::ORDER order)
+bool Master::FindOrder(BWAPI::Orders::Enum::Enum type, MasterOrder* findOrder)
 {
-	for (Master::ORDER o : Orders)
+	for (int i =0; i < Orders.size(); i++)
 	{
-		if (o == order)
+		if (Orders[i].m_type == type)
 		{
-			Orders.remove(o);
+			findOrder = &Orders[i];
+			Orders.erase(Orders.begin() + i);
 			return true;
 		}
 	}
@@ -22,7 +23,7 @@ bool Master::FindOrder(Master::ORDER order)
 
 Master::Master()
 {
-	Orders.push_front(Master::ORDER::EXPLORE);
+	Orders.push_back(MasterOrder(BWAPI::Orders::Enum::Enum::AIPatrol, BWAPI::Position(rand() % 5000, rand() % 5000)));
 }
 
 void Master::Update()
@@ -33,3 +34,10 @@ void Master::Update()
 Master::~Master()
 {
 }
+
+MasterOrder::MasterOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position)
+{
+	m_type = type;
+	m_position = position;
+}
+

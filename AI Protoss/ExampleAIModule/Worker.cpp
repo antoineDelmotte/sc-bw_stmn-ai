@@ -7,13 +7,10 @@ using namespace BWAPI;
 using namespace Filter;
 
 //Mdr redéclarer ça ici.. merci le c++ !
-std::list<Worker*> Worker::Workers;
+std::vector<Worker*> Worker::Workers;
 
-Worker::Worker(BWAPI::Unit u)
+Worker::Worker(BWAPI::Unit u) : StarcraftUnit(u)
 {
-	m_unit = u;
-
-
 	//LES BEHAVIORTREE SANS MOTEUR GRAPHIQUE POUR LES DEFINIRS SONT TROP COMPLIQUE A IMPLEMENTER
 
 	//DEFINITION
@@ -60,6 +57,8 @@ void Worker::Update()
 		return;
 
 
+	MasterOrder* masterOrder;
+
 	// if our worker is idle
 	if (m_unit->isIdle())
 	{
@@ -69,10 +68,13 @@ void Worker::Update()
 		{
 			m_unit->returnCargo();
 		}
-		else if (Master::FindOrder(Master::ORDER::EXPLORE))
+		else if (Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol, masterOrder))
 		{
-			m_unit->move(m_unit->getPosition() + BWAPI::Position(rand()%5000, rand()%5000));
-			isExploring = true;
+			if (IsTheNearest(masterOrder->m_position, Workers))
+			{
+				m_unit->move(masterOrder->m_position);
+				isExploring = true;
+			}
 		}
 
 		else if (!m_unit->getPowerUp())  // The worker cannot harvest anything if it
