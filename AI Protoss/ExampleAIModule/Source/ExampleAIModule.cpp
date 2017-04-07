@@ -9,10 +9,9 @@
 using namespace BWAPI;
 using namespace Filter;
 
-Master* master;
-
 void ExampleAIModule::onStart()
 {
+	Master::Init();
 
 	for (auto unit : Broodwar->self()->getUnits())
 	{
@@ -26,7 +25,6 @@ void ExampleAIModule::onStart()
 		}
 	}
 
-  master = new Master();
 
   // Hello World!
   Broodwar->sendText("Hello world!");
@@ -101,7 +99,7 @@ void ExampleAIModule::onFrame()
 
 
 
-  master->Update();
+  Master::Update();
 
   for (Worker* w : Worker::Workers)
   {
@@ -227,9 +225,18 @@ void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
 	  if (unit->getType().isWorker())
 		  Worker::Workers.push_back(new Worker(unit));
 	  else if (unit->getType() == UnitTypes::Protoss_Pylon)
+	  {
 		  Pylon::Pylons.push_back(new Pylon(unit));
+		  Master::waitPylonCount--;
+	  }
 	  else if (unit->getType().isResourceDepot())
+	  {
 		  SupplyBuilder::SupplyBuilders.push_back(new SupplyBuilder(unit));
+	  }
+	  else if (unit->getType() == UnitTypes::Protoss_Gateway)
+	  {
+		  Master::waitGatewayCount--;
+	  }
 
   }
 }
