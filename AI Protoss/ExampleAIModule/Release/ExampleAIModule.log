@@ -1,13 +1,5 @@
 ﻿  ExampleAIModule.cpp
-  Worker.cpp
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/StarcraftUnit.h(16): warning C4018: '<' : signed/unsigned mismatch (Worker.cpp)
-          Worker.cpp(73) : see reference to function template instantiation 'bool StarcraftUnit::IsTheNearest<Worker*>(BWAPI::Position,std::vector<Worker *,std::allocator<_Ty>>)' being compiled
-          with
-          [
-              _Ty=Worker *
-          ]
      Creating library Release\ExampleAIModule.lib and object Release\ExampleAIModule.exp
   Generating code
-d:\1. travaux en cours\ia starcraft\ai protoss\exampleaimodule\worker.cpp(71): warning C4700: uninitialized local variable 'masterOrder' used
   Finished generating code
   ExampleAIModule.vcxproj -> D:\1. Travaux en cours\IA Starcraft\AI Protoss\Release\ExampleAIModule.dll

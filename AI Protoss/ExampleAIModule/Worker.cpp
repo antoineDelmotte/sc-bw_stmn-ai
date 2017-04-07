@@ -79,6 +79,15 @@ void Worker::Update()
 
 			Broodwar << "Patrol needed\n";
 		}
+		else if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding)) != NULL)
+		{
+			if (IsTheNearest(masterOrder->m_position, Workers))
+			{
+				m_unit->build(((BuildOrder*)masterOrder)->m_unitType, BWAPI::TilePosition(masterOrder->m_position));
+				Master::TakeOrder(masterOrder);
+				lastOrder = masterOrder;
+			}
+		}
 		else if (!m_unit->getPowerUp())  // The worker cannot harvest anything if it
 		{                             // is carrying a powerup such as a flag
 									  // Harvest from the nearest mineral patch or gas refinery

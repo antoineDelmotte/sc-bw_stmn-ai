@@ -2,6 +2,7 @@
 #include "Master.h"
 #include "SupplyBuilder.h"
 #include "Worker.h"
+#include "Pylon.h"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -55,10 +56,17 @@ void Master::Update()
 {
 	if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
 	{
-		if (Broodwar->self()->gas() > UnitTypes::Protoss_Gateway.gasPrice() && Broodwar->self()->minerals() > UnitTypes::Protoss_Gateway.mineralPrice())
+		if (Pylon::Pylons.size() == 0)
 		{
-			UnitType supplyProviderType = Worker::Workers[0]->m_unit->getType().getRace().getSupplyProvider();
-			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, ConvertTilePosition(Broodwar->getBuildLocation(supplyProviderType, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition()), supplyProviderType), UnitTypes::Protoss_Gateway));
+			if ((Broodwar->self()->gas() > UnitTypes::Protoss_Pylon.gasPrice() && Broodwar->self()->minerals() > UnitTypes::Protoss_Pylon.mineralPrice()))
+			{
+				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, ConvertTilePosition(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, Pylon::Pylons[0]->m_unit->getTilePosition()), UnitTypes::Protoss_Pylon), UnitTypes::Protoss_Pylon));
+			}
+
+		}
+		else if (Broodwar->self()->gas() > UnitTypes::Protoss_Gateway.gasPrice() && Broodwar->self()->minerals() > UnitTypes::Protoss_Gateway.mineralPrice())
+		{
+			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, ConvertTilePosition(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition()), UnitTypes::Protoss_Gateway), UnitTypes::Protoss_Gateway));
 		}
 	}
 }
@@ -91,6 +99,19 @@ BWAPI::Position Master::ConvertTilePosition(const BWAPI::TilePosition tilePositi
 			)
 		);
 }
+
+/*
+BWAPI::TilePosition Master::ConvertPosition(const BWAPI::Position tilePosition, const BWAPI::UnitType unitType)
+{
+	return
+		BWAPI::TilePosition(
+			BWAPI::TilePosition(tilePosition) -
+			BWAPI::TilePosition(
+			(unitType.tileWidth() * BWAPI::TILEPOSITION_SCALE) / 2,
+				(unitType.tileHeight() * BWAPI::TILEPOSITION_SCALE) / 2
+			)
+		);
+}*/
 
 //Tell if the given Position is a valid one (not invalid, unknown or not set)
 bool Master::IsPositionValid(const BWAPI::Position position)

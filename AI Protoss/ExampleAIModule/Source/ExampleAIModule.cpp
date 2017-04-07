@@ -3,6 +3,7 @@
 #include "../Worker.h"
 #include "../Master.h"
 #include "../SupplyBuilder.h"
+#include "../Pylon.h"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -101,13 +102,17 @@ void ExampleAIModule::onFrame()
 
   master->Update();
 
-
-
-
   for (Worker* w : Worker::Workers)
   {
 	  w->Update();
   }
+
+  for (Pylon* p : Pylon::Pylons)
+  {
+	  p->Update();
+  }
+
+
 
   // Iterate through all the units that we own
   for (auto &u : Broodwar->self()->getUnits())
@@ -260,4 +265,10 @@ void ExampleAIModule::onSaveGame(std::string gameName)
 
 void ExampleAIModule::onUnitComplete(BWAPI::Unit unit)
 {
+	if (unit->getType().isWorker())
+		Worker::Workers.push_back(new Worker(unit));
+	else if (unit->getType() == UnitTypes::Protoss_Pylon)
+		Pylon::Pylons.push_back(new Pylon(unit));
+	//else if(unit->getType().isS)
+
 }

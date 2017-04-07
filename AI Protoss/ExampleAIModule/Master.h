@@ -36,6 +36,7 @@ public:
 	static bool IsTilePositionValid(const BWAPI::TilePosition tilePosition);
 	static bool IsPositionValid(const BWAPI::Position position);
 	static BWAPI::Position ConvertTilePosition(const BWAPI::TilePosition tilePosition, const BWAPI::UnitType unitType);
+	//static BWAPI::TilePosition ConvertPosition(const BWAPI::Position tilePosition, const BWAPI::UnitType unitType);
 	static void TakeOrder(MasterOrder* order);
 	static void AddOrder(MasterOrder* order);
 	static void InformEnemyBaseLocation(BWAPI::Position position);
