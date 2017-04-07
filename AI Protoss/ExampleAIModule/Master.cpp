@@ -73,6 +73,7 @@ void Master::Update()
 		{	
 			if (Broodwar->self()->gas() >= UnitTypes::Protoss_Gateway.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Gateway.mineralPrice())
 			{
+				Broodwar->sendText("GATEWAY ORDER");
 				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Gateway));
 				waitGateway = true;
 			}

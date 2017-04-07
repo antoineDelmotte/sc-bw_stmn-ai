@@ -58,7 +58,7 @@ void Worker::Update()
 
 
 	MasterOrder* masterOrder;
-	if (m_unit->isIdle() || m_unit->isInterruptible() && lastOrder == NULL)
+	if ((m_unit->isInterruptible()) && lastOrder == NULL)
 	{
 		if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol)) != NULL)
 		{
@@ -76,7 +76,7 @@ void Worker::Update()
 				m_unit->build(((BuildOrder*)masterOrder)->m_unitType, BWAPI::TilePosition(masterOrder->m_position));
 				Master::TakeOrder(masterOrder);
 				lastOrder = masterOrder;
-				Broodwar->sendText("Build Pylon");
+				Broodwar->sendText("Build", ((BuildOrder*)masterOrder)->m_unitType);
 			}
 		}
 	}
