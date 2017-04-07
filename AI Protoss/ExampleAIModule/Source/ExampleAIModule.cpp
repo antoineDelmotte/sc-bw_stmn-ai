@@ -4,6 +4,7 @@
 #include "../Master.h"
 #include "../SupplyBuilder.h"
 #include "../Pylon.h"
+#include "../SupplyBuilder.h"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -112,39 +113,35 @@ void ExampleAIModule::onFrame()
 	  p->Update();
   }
 
+  /*for (SupplyBuilder* s : SupplyBuilder::SupplyBuilders)
+  {
+	  s->Update();
+  }*/
+
 
 
   // Iterate through all the units that we own
-  for (auto &u : Broodwar->self()->getUnits())
+ /* for (auto &u : Broodwar->self()->getUnits())
   {
-    // Ignore the unit if it no longer exists
-    // Make sure to include this block when handling any Unit pointer!
-    if ( !u->exists() )
-      continue;
+	  // Ignore the unit if it no longer exists
+	  // Make sure to include this block when handling any Unit pointer!
+	  if (!u->exists())
+		  continue;
 
-    // Ignore the unit if it has one of the following status ailments
-    if ( u->isLockedDown() || u->isMaelstrommed() || u->isStasised() )
-      continue;
+	  // Ignore the unit if it has one of the following status ailments
+	  if (u->isLockedDown() || u->isMaelstrommed() || u->isStasised())
+		  continue;
 
-    // Ignore the unit if it is in one of the following states
-    if ( u->isLoaded() || !u->isPowered() || u->isStuck() )
-      continue;
+	  // Ignore the unit if it is in one of the following states
+	  if (u->isLoaded() || !u->isPowered() || u->isStuck())
+		  continue;
 
-    // Ignore the unit if it is incomplete or busy constructing
-    if ( !u->isCompleted() || u->isConstructing() )
-      continue;
+	  // Ignore the unit if it is incomplete or busy constructing
+	  if (!u->isCompleted() || u->isConstructing())
+		  continue;
 
+  } */
 
-    // Finally make the unit do some stuff!
-
-    if ( u->getType().isResourceDepot() ) // A resource depot is a Command Center, Nexus, or Hatchery
-    {
-
-
-
-    }
-
-  } // closure: unit iterator
 }
 
 void ExampleAIModule::onSendText(std::string text)
@@ -228,9 +225,11 @@ void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
   {
 	  //CODE HERE PLZ
 	  if (unit->getType().isWorker())
-	  {
 		  Worker::Workers.push_back(new Worker(unit));
-	  }
+	  else if (unit->getType() == UnitTypes::Protoss_Pylon)
+		  Pylon::Pylons.push_back(new Pylon(unit));
+	  else if (unit->getType().isResourceDepot())
+		  SupplyBuilder::SupplyBuilders.push_back(new SupplyBuilder(unit));
 
   }
 }
@@ -265,10 +264,5 @@ void ExampleAIModule::onSaveGame(std::string gameName)
 
 void ExampleAIModule::onUnitComplete(BWAPI::Unit unit)
 {
-	if (unit->getType().isWorker())
-		Worker::Workers.push_back(new Worker(unit));
-	else if (unit->getType() == UnitTypes::Protoss_Pylon)
-		Pylon::Pylons.push_back(new Pylon(unit));
-	//else if(unit->getType().isS)
 
 }

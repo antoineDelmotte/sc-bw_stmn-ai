@@ -52,21 +52,30 @@ void Master::InformEnemyBaseLocation(BWAPI::Position position)
 	enemyStartLocations.insert(position);
 }
 
+bool waitPylon = false;
+bool waitGateway = false;
 void Master::Update()
 {
+
 	if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
 	{
-		if (Pylon::Pylons.size() == 0)
+		if (!waitPylon && Pylon::Pylons.size() == 0)
 		{
-			if ((Broodwar->self()->gas() > UnitTypes::Protoss_Pylon.gasPrice() && Broodwar->self()->minerals() > UnitTypes::Protoss_Pylon.mineralPrice()))
+			if ((Broodwar->self()->gas() >= UnitTypes::Protoss_Pylon.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Pylon.mineralPrice()))
 			{
-				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, ConvertTilePosition(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, Pylon::Pylons[0]->m_unit->getTilePosition()), UnitTypes::Protoss_Pylon), UnitTypes::Protoss_Pylon));
+				Broodwar->sendText("PYLON ORDER");
+				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
+				waitPylon = true;
 			}
 
 		}
-		else if (Broodwar->self()->gas() > UnitTypes::Protoss_Gateway.gasPrice() && Broodwar->self()->minerals() > UnitTypes::Protoss_Gateway.mineralPrice())
-		{
-			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, ConvertTilePosition(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition()), UnitTypes::Protoss_Gateway), UnitTypes::Protoss_Gateway));
+		else if (!waitGateway && Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted())
+		{	
+			if (Broodwar->self()->gas() >= UnitTypes::Protoss_Gateway.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Gateway.mineralPrice())
+			{
+				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Gateway));
+				waitGateway = true;
+			}
 		}
 	}
 }

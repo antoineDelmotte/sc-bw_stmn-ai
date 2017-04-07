@@ -10,6 +10,8 @@ public:
 	BWAPI::Orders::Enum::Enum m_type;
 	BWAPI::Position m_position;
 	int index;
+
+	BWAPI::UnitType m_unitType;
 };
 
 
