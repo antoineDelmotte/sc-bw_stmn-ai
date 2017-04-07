@@ -14,6 +14,10 @@ BWAPI::Position Master::personalStartLocation;		// My start position
 
 
 std::vector<MasterOrder*> Master::Orders;
+
+int Master::waitPylonCount = 0;
+int Master::waitGatewayCount = 0;
+
 //Find order and delete it from the list
 MasterOrder* Master::FindOrder(BWAPI::Orders::Enum::Enum type)
 {
@@ -29,7 +33,7 @@ MasterOrder* Master::FindOrder(BWAPI::Orders::Enum::Enum type)
 }
 
 
-Master::Master()
+void Master::Init()
 {
 	fillStartingLocations();
 	AddOrder(new MasterOrder(BWAPI::Orders::Enum::Enum::AIPatrol, *allStartLocations.begin()));
@@ -52,38 +56,34 @@ void Master::InformEnemyBaseLocation(BWAPI::Position position)
 	enemyStartLocations.insert(position);
 }
 
-bool waitPylon = false;
-bool waitGateway = false;
+
 void Master::Update()
 {
 
 	if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
 	{
-		if (!waitPylon && Pylon::Pylons.size() == 0)
+		if (waitPylonCount == 0 && Pylon::Pylons.size() == 0)
 		{
 			if ((Broodwar->self()->gas() >= UnitTypes::Protoss_Pylon.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Pylon.mineralPrice()))
 			{
 				Broodwar->sendText("PYLON ORDER");
 				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
-				waitPylon = true;
+				waitPylonCount++;
 			}
 
 		}
-		else if (!waitGateway && Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted())
+		else if (waitGatewayCount == 0 && Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted())
 		{	
 			if (Broodwar->self()->gas() >= UnitTypes::Protoss_Gateway.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Gateway.mineralPrice())
 			{
 				Broodwar->sendText("GATEWAY ORDER");
 				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Gateway));
-				waitGateway = true;
+				waitGatewayCount ++;
 			}
 		}
 	}
 }
 
-Master::~Master()
-{
-}
 
 MasterOrder::MasterOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position)
 {

@@ -21,7 +21,7 @@ struct BuildOrder : public MasterOrder
 };
 
 
-class Master
+static class Master
 {
 public:
 
@@ -41,10 +41,11 @@ public:
 	static void AddOrder(MasterOrder* order);
 	static void InformEnemyBaseLocation(BWAPI::Position position);
 
-	Master();
+	static int waitPylonCount;
+	static int waitGatewayCount;
 
-	void Update();
-	~Master();
+	static void Init();
+	static void Update();
 };
 
 
