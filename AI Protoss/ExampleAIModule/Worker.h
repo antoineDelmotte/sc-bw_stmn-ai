@@ -12,11 +12,9 @@ public:
 	static std::vector<Worker*> Workers;
 	Worker(BWAPI::Unit u);
 
-	void Update();
+    void Update();
 	~Worker();
 
-private :
-	bool isExploring;
 	//bt::BehaviorTree behaviorTree;
 };
 

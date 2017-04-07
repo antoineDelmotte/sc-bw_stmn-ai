@@ -64,19 +64,21 @@ void Worker::Update()
 	{
 		// Order workers carrying a resource to return them to the center,
 		// otherwise find a mineral patch to harvest.
-		if (!isExploring && (m_unit->isCarryingGas() || m_unit->isCarryingMinerals()))
+		if (lastOrder == NULL && (m_unit->isCarryingGas() || m_unit->isCarryingMinerals()))
 		{
 			m_unit->returnCargo();
 		}
-		else if (Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol, masterOrder))
+		else if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol)) != NULL)
 		{
 			if (IsTheNearest(masterOrder->m_position, Workers))
 			{
 				m_unit->move(masterOrder->m_position);
-				isExploring = true;
+				Master::TakeOrder(masterOrder);
+				lastOrder = masterOrder;
 			}
-		}
 
+			Broodwar << "Patrol needed\n";
+		}
 		else if (!m_unit->getPowerUp())  // The worker cannot harvest anything if it
 		{                             // is carrying a powerup such as a flag
 									  // Harvest from the nearest mineral patch or gas refinery

@@ -1,8 +1,10 @@
 #pragma once
 #include <BWAPI.h>
 #include <BWAPI/Client.h>
+#include <../ExampleAIModule/Master.h>
 
-class StarcraftUnit
+
+ class StarcraftUnit
 {
 public:
 	StarcraftUnit(BWAPI::Unit u);
@@ -24,6 +26,9 @@ public:
 		return true;
 	}
 
+	virtual void Update() = 0;
+
 	BWAPI::Unit m_unit;
+	MasterOrder* lastOrder = NULL;
 };
 
