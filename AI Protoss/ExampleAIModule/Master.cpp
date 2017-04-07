@@ -9,9 +9,11 @@ using namespace Filter;
 
 std::set<BWAPI::Position> Master::allStartLocations;	// All the starting positions
 std::set<BWAPI::Position> Master::enemyStartLocations;	// Starting positions occupied by enemies
+
 std::set<BWAPI::Position> Master::otherStartLocations;	// Starting positions that are not occupied by me (but maybe by enemies)
 BWAPI::Position Master::personalStartLocation;		// My start position
 
+std::set<BWAPI::Position> Master::enemyLocations;
 
 std::vector<MasterOrder*> Master::Orders;
 
@@ -36,7 +38,6 @@ MasterOrder* Master::FindOrder(BWAPI::Orders::Enum::Enum type)
 void Master::Init()
 {
 	fillStartingLocations();
-	AddOrder(new MasterOrder(BWAPI::Orders::Enum::Enum::AIPatrol, *allStartLocations.begin()));
 }
 
 
@@ -53,12 +54,34 @@ void Master::AddOrder(MasterOrder* order)
 
 void Master::InformEnemyBaseLocation(BWAPI::Position position)
 {
-	enemyStartLocations.insert(position);
+	enemyLocations.insert(position);
 }
 
 
+int enemyStartLocationsChecked = 0;
 void Master::Update()
 {
+
+	bool needScouting = true;
+	for (Worker* w : Worker::Workers)
+	{
+		if (w->isScouting)
+		{
+			needScouting = false;
+			break;
+		};
+	}
+
+	if (needScouting)
+	{
+		std::set<Position>::iterator it = enemyStartLocations.begin();
+		std::advance(it, enemyStartLocationsChecked);
+
+		AddOrder(new MasterOrder(BWAPI::Orders::Enum::Enum::AIPatrol, *it));
+		enemyStartLocationsChecked = (enemyStartLocationsChecked+1)% enemyStartLocations.size();
+		Broodwar->sendText("SCOUT ORDER");
+	}
+
 
 	if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
 	{

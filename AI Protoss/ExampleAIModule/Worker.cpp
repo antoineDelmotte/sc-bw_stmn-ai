@@ -57,6 +57,11 @@ void Worker::Update()
 		return;
 
 
+	if (m_unit->isIdle())
+	{
+		isScouting = false;
+	}
+
 	MasterOrder* masterOrder;
 	if ((m_unit->isInterruptible()) && lastOrder == NULL)
 	{
@@ -66,6 +71,7 @@ void Worker::Update()
 			{
 				m_unit->move(masterOrder->m_position);
 				Master::TakeOrder(masterOrder);
+				isScouting = true;
 				lastOrder = masterOrder;
 			}
 		}

@@ -29,6 +29,8 @@ public:
 	static std::set<BWAPI::Position> allStartLocations;	// All the starting positions
 	static std::set<BWAPI::Position> enemyStartLocations;	// Starting positions occupied by enemies
 	static std::set<BWAPI::Position> otherStartLocations;	// Starting positions that are not occupied by me (but maybe by enemies)
+	static std::set<BWAPI::Position> Master::enemyLocations;
+
 	static BWAPI::Position personalStartLocation;		// My start position
 
 	static MasterOrder* FindOrder(BWAPI::Orders::Enum::Enum order);
@@ -40,6 +42,7 @@ public:
 	static void TakeOrder(MasterOrder* order);
 	static void AddOrder(MasterOrder* order);
 	static void InformEnemyBaseLocation(BWAPI::Position position);
+
 
 	static int waitPylonCount;
 	static int waitGatewayCount;
