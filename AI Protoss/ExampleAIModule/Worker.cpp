@@ -119,6 +119,13 @@ void Worker::Update()
 				isScouting = false;
 			}
 		}
+		else if (lastOrder->m_type == BWAPI::Orders::Enum::Enum::PlaceBuilding)
+		{
+			if (!m_unit->isConstructing())
+			{
+				lastOrder = NULL;
+			}
+		}
 	}
 }
 
