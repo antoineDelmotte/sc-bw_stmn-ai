@@ -222,20 +222,24 @@ void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
   else
   {
 	  //CODE HERE PLZ
-	  if (unit->getType().isWorker())
-		  Worker::Workers.push_back(new Worker(unit));
-	  else if (unit->getType() == UnitTypes::Protoss_Pylon)
+
+	  if (Broodwar->self()->getUnits().contains(unit))
 	  {
-		  Pylon::Pylons.push_back(new Pylon(unit));
-		  Master::waitPylonCount--;
-	  }
-	  else if (unit->getType().isResourceDepot())
-	  {
-		  SupplyBuilder::SupplyBuilders.push_back(new SupplyBuilder(unit));
-	  }
-	  else if (unit->getType() == UnitTypes::Protoss_Gateway)
-	  {
-		  Master::waitGatewayCount--;
+		  if (unit->getType().isWorker())
+			  Worker::Workers.push_back(new Worker(unit));
+		  else if (unit->getType() == UnitTypes::Protoss_Pylon)
+		  {
+			  Pylon::Pylons.push_back(new Pylon(unit));
+			  Master::waitPylonCount--;
+		  }
+		  else if (unit->getType().isResourceDepot())
+		  {
+			  SupplyBuilder::SupplyBuilders.push_back(new SupplyBuilder(unit));
+		  }
+		  else if (unit->getType() == UnitTypes::Protoss_Gateway)
+		  {
+			  Master::waitGatewayCount--;
+		  }
 	  }
 
   }
