@@ -124,10 +124,10 @@ void ExampleAIModule::onFrame()
 	  z->Update();
   }
 
-  /*for (SupplyBuilder* s : SupplyBuilder::SupplyBuilders)
+  for (SupplyBuilder* s : SupplyBuilder::SupplyBuilders)
   {
 	  s->Update();
-  }*/
+  }
 
 
 

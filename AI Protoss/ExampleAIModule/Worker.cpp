@@ -42,7 +42,14 @@ void Worker::Update()
 	//behaviorTree.Update();
 
 	if (!m_unit->exists())
+	{
+    	Worker::Workers.erase(std::find(Worker::Workers.begin(), Worker::Workers.end(), this));
+		if (lastOrder != NULL &&( lastOrder->m_type != BWAPI::Orders::Enum::Enum::AIPatrol || Master::enemyStartLocations.size() == 0 ))
+		{
+			Master::AddOrder(lastOrder);
+		} 
 		return;
+	}
 
 	// Ignore the unit if it has one of the following status ailments
 	if (m_unit->isLockedDown() || m_unit->isMaelstrommed() || m_unit->isStasised())
@@ -55,7 +62,6 @@ void Worker::Update()
 	// Ignore the unit if it is incomplete or busy constructing
 	if (!m_unit->isCompleted() || m_unit->isConstructing())
 		return;
-
 
 	if (m_unit->isIdle())
 	{

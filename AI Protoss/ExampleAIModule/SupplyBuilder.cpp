@@ -18,15 +18,19 @@ SupplyBuilder::~SupplyBuilder()
 
 void SupplyBuilder::Update()
 {
-	MasterOrder* masterOrder;
 	// Order the depot to construct more workers! But only when it is idle.
 
-	if (m_unit->isIdle() && lastOrder == NULL) 	// if our nexus is idle
+	if (m_unit->isIdle() && !m_unit->isTraining()) 	// if our nexus is idle
 	{
-		if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::Train)) != NULL)
+		for (MasterOrder* m : Master::FindOrders(BWAPI::Orders::Enum::Enum::Train))
 		{
-			//Broodwar->sendText("Building peon !");
-			m_unit->train(((BuildOrder*)masterOrder)->m_unitType);
+			if ( ((TrainOrder*)m)->m_unitType == BWAPI::UnitTypes::Protoss_Probe)
+			{
+				//Broodwar->sendText("Building peon !");
+				m_unit->train(((TrainOrder*)m)->m_unitType);
+				Master::TakeOrder(m);
+				break;
+			}
 		}
 	}
 

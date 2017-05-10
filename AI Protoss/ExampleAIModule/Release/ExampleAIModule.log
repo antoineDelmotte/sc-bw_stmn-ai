@@ -1,22 +1,6 @@
-﻿  Gateway.cpp
-  Master.cpp
-  Pylon.cpp
-  ExampleAIModule.cpp
-  StarcraftUnit.cpp
-  SupplyBuilder.cpp
-  Worker.cpp
-  Zealott.cpp
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/Master.h(68): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared (Pylon.cpp)
-d:\1. travaux en cours\ia starcraft\ai protoss\exampleaimodule\Master.h(68): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared (Master.cpp)
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/Master.h(68): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared (SupplyBuilder.cpp)
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/Master.h(68): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared (StarcraftUnit.cpp)
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/Master.h(68): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared (Zealott.cpp)
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/Master.h(68): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared (Gateway.cpp)
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/Master.h(68): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared (Worker.cpp)
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/Master.h(68): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared (Source\ExampleAIModule.cpp)
-Master.cpp(28): warning C4018: '<' : signed/unsigned mismatch
-Master.cpp(43): warning C4018: '<' : signed/unsigned mismatch
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/StarcraftUnit.h(18): warning C4018: '<' : signed/unsigned mismatch (Worker.cpp)
+﻿  Worker.cpp
+D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/Master.h(67): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared
+D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/StarcraftUnit.h(18): warning C4018: '<' : signed/unsigned mismatch
           Worker.cpp(76) : see reference to function template instantiation 'bool StarcraftUnit::IsTheNearest<Worker*>(BWAPI::Position,std::vector<Worker *,std::allocator<_Ty>>)' being compiled
           with
           [

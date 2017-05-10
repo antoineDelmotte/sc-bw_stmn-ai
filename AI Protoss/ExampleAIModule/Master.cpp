@@ -59,13 +59,12 @@ void Master::Init()
 
 void Master::TakeOrder(MasterOrder* order)
 {
-	Orders.erase(Orders.begin() + order->index);
+	Orders.erase(std::find(Orders.begin(), Orders.end() , order));
 }
 
 void Master::AddOrder(MasterOrder* order)
 {
 	Orders.push_back(order);
-	order->index = Orders.size() - 1;
 }
 
 void Master::InformEnemyBaseLocation(BWAPI::Position position)
@@ -99,9 +98,15 @@ void Master::Update()
 		Broodwar->sendText((std::to_string(enemyStartLocationsChecked)).c_str());
 	}
 
+	if (Worker::Workers.size() < 10 && FindOrders(BWAPI::Orders::Enum::Enum::Train).size() < 5)
+	{
+		AddOrder(new TrainOrder(BWAPI::Orders::Enum::Enum::Train, BWAPI::Position(0,0), UnitTypes::Protoss_Probe));
+	}
+
+
 	if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
 	{
-		if (waitPylonCount == 0 && Pylon::Pylons.size() == 0)
+		if (waitPylonCount == 0 && Broodwar->self()->supplyTotal() - Broodwar->self()->supplyUsed() < 2 )
 		{
 			if ((Broodwar->self()->gas() >= UnitTypes::Protoss_Pylon.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Pylon.mineralPrice()))
 			{
@@ -174,7 +179,7 @@ MasterOrder::MasterOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position positio
 
 BuildOrder::BuildOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position, UnitType unitType) : MasterOrder(type, position)
 {
-	m_position = position;
+	m_unitType = unitType;
 }
 
 TrainOrder::TrainOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position, UnitType unitType) : MasterOrder(type, position)
