@@ -1,4 +1,9 @@
-﻿  ExampleAIClient.cpp
-  Generating code
-  Finished generating code
-  ExampleAIClient.vcxproj -> D:\1. Travaux en cours\IA Starcraft\AI Protoss\Release\ExampleAIClient.exe
+﻿La génération a démarré 07/04/2017 16:27:55.
+     1>Projet "D:\Documents\sc-bw_stmn-ai\AI Protoss\ExampleAIClient\ExampleAIClient.vcxproj" sur le nœud 2 (Build cible(s)).
+     1>Link:
+         ExampleAIClient.vcxproj -> D:\Documents\sc-bw_stmn-ai\AI Protoss\Release\ExampleAIClient.exe
+     1>Génération du projet "D:\Documents\sc-bw_stmn-ai\AI Protoss\ExampleAIClient\ExampleAIClient.vcxproj" terminée (Build cible(s)).
+
+La génération a réussi.
+
+Temps écoulé 00:00:00.44
