@@ -1,5 +1,24 @@
-﻿  ExampleAIModule.cpp
-     Creating library Release\ExampleAIModule.lib and object Release\ExampleAIModule.exp
-  Generating code
-  Finished generating code
-  ExampleAIModule.vcxproj -> D:\1. Travaux en cours\IA Starcraft\AI Protoss\Release\ExampleAIModule.dll
+﻿La génération a démarré 10/05/2017 10:56:59.
+     1>Projet "D:\Documents\sc-bw_stmn-ai\AI Protoss\ExampleAIModule\ExampleAIModule.vcxproj" sur le nœud 2 (Build cible(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\include /I"D:\1. Travaux en cours\IA Starcraft\AI Protoss\BehaviorTree" /Zi /nologo /W3 /WX- /MP /O2 /Oi /Oy- /GL /D NOMINMAX /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D EXAMPLEAIMODULE_EXPORTS /D _WINDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Master.cpp
+         Master.cpp
+     1>Master.cpp(20): warning C4018: '<' : incompatibilité signed/unsigned
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Documents\sc-bw_stmn-ai\AI Protoss\Release\ExampleAIModule.dll" /INCREMENTAL:NO /NOLOGO ../lib/BWAPI.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Documents\sc-bw_stmn-ai\AI Protoss\Release\ExampleAIModule.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Release\ExampleAIModule.lib" /MACHINE:X86 /SAFESEH /DLL Release\Master.obj
+         Release\Pylon.obj
+         Release\Dll.obj
+         Release\ExampleAIModule.obj
+         Release\StarcraftUnit.obj
+         Release\SupplyBuilder.obj
+         Release\W3Node.obj
+         Release\Worker.obj
+            Création de la bibliothèque Release\ExampleAIModule.lib et de l'objet Release\ExampleAIModule.exp
+         Génération de code en cours
+         Fin de la génération du code
+         ExampleAIModule.vcxproj -> D:\Documents\sc-bw_stmn-ai\AI Protoss\Release\ExampleAIModule.dll
+     1>Génération du projet "D:\Documents\sc-bw_stmn-ai\AI Protoss\ExampleAIModule\ExampleAIModule.vcxproj" terminée (Build cible(s)).
+
+La génération a réussi.
+
+Temps écoulé 00:00:08.07

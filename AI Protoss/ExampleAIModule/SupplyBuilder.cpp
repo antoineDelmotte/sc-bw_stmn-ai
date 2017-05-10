@@ -18,7 +18,20 @@ SupplyBuilder::~SupplyBuilder()
 
 void SupplyBuilder::Update()
 {
+	MasterOrder* masterOrder;
 	// Order the depot to construct more workers! But only when it is idle.
+
+	if (m_unit->isIdle() && lastOrder == NULL) 	// if our nexus is idle
+	{
+		if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::Train)) != NULL)
+		{
+			//Broodwar->sendText("Building peon !");
+			m_unit->train(((BuildOrder*)masterOrder)->m_unitType);
+		}
+	}
+
+
+	/*
 	if (m_unit->isIdle() && !m_unit->train(m_unit->getType().getRace().getWorker()))
 	{
 		// If that fails, draw the error at the location so that you can visibly see what went wrong!
@@ -75,4 +88,6 @@ void SupplyBuilder::Update()
 			} // closure: supplyBuilder is valid
 		} // closure: insufficient supply
 	} // closure: failed to train idle unit
+
+	*/
 }
