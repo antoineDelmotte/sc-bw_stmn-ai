@@ -21,6 +21,20 @@ struct BuildOrder : public MasterOrder
 };
 
 
+struct TrainOrder : public MasterOrder
+{
+	TrainOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position, BWAPI::UnitType unitType);
+
+	BWAPI::UnitType m_unitType;
+};
+
+struct AttackOrder : public MasterOrder
+{
+	AttackOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position, BWAPI::UnitType unitType);
+
+	BWAPI::UnitType m_unitType;
+};
+
 static class Master
 {
 public:
@@ -34,6 +48,8 @@ public:
 	static BWAPI::Position personalStartLocation;		// My start position
 
 	static MasterOrder* FindOrder(BWAPI::Orders::Enum::Enum order);
+	static std::vector<MasterOrder*> Master::FindOrders(BWAPI::Orders::Enum::Enum type);
+
 	static void fillStartingLocations();
 	static bool IsTilePositionValid(const BWAPI::TilePosition tilePosition);
 	static bool IsPositionValid(const BWAPI::Position position);

@@ -3,6 +3,8 @@
 #include "SupplyBuilder.h"
 #include "Worker.h"
 #include "Pylon.h"
+#include "Gateway.h"
+#include "Zealott.h"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -34,6 +36,20 @@ MasterOrder* Master::FindOrder(BWAPI::Orders::Enum::Enum type)
 	return NULL;
 }
 
+std::vector<MasterOrder*> Master::FindOrders(BWAPI::Orders::Enum::Enum type)
+{
+	std::vector<MasterOrder*> orders;
+
+	for (int i = 0; i < Orders.size(); i++)
+	{
+		if (Orders[i]->m_type == type)
+		{
+			 orders.push_back(Orders[i]);
+		}
+	}
+
+	return orders;
+}
 
 void Master::Init()
 {
@@ -62,7 +78,7 @@ int enemyStartLocationsChecked = 2;
 void Master::Update()
 {
 	fillStartingLocations();
-	bool needScouting = true;
+	bool needScouting = enemyStartLocations.size() == 0 ? true : false;
 	for (Worker* w : Worker::Workers)
 	{
 		if (w->isScouting)
@@ -83,7 +99,6 @@ void Master::Update()
 		Broodwar->sendText((std::to_string(enemyStartLocationsChecked)).c_str());
 	}
 
-
 	if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
 	{
 		if (waitPylonCount == 0 && Pylon::Pylons.size() == 0)
@@ -94,9 +109,8 @@ void Master::Update()
 				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
 				waitPylonCount++;
 			}
-
 		}
-		else if (waitGatewayCount == 0 && Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted())
+		else if (waitGatewayCount == 0 && Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted() && Gateway::Gateways.size() == 0 )
 		{	
 			if (Broodwar->self()->gas() >= UnitTypes::Protoss_Gateway.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Gateway.mineralPrice())
 			{
@@ -106,6 +120,49 @@ void Master::Update()
 			}
 		}
 	}
+
+
+	if (Broodwar->self()->supplyTotal() > Broodwar->self()->supplyUsed() + UnitTypes::Protoss_Zealot.supplyRequired())
+	{
+		if (Gateway::Gateways.size() > 0 && Zealott::Zealotts.size() < 20)
+		{
+			bool trainZealot = false;
+			for (MasterOrder* to : FindOrders(BWAPI::Orders::Enum::Enum::Train))
+			{
+				if (((TrainOrder*)to)->m_unitType == UnitTypes::Protoss_Zealot)
+				{
+					trainZealot = true;
+					break;
+				}
+			}
+
+			if (!trainZealot && ((Broodwar->self()->gas() >= UnitTypes::Protoss_Zealot.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Zealot.mineralPrice())))
+			{
+				Broodwar->sendText("ZEALOT ORDER");
+				AddOrder(new TrainOrder(BWAPI::Orders::Enum::Enum::Train, (*Gateway::Gateways.begin())->m_unit->getPosition(), UnitTypes::Protoss_Zealot));
+			}
+		}
+	}
+	else if (Worker::Workers.size() > 0)
+	{
+		if (waitPylonCount == 0)
+		{
+			if ((Broodwar->self()->gas() >= UnitTypes::Protoss_Pylon.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Pylon.mineralPrice()))
+			{
+				Broodwar->sendText("PYLON ORDER");
+				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
+				waitPylonCount++;
+			}
+		}
+	}
+
+	//A L ATTAQUE !!! CHARGEZ !!!!!
+	if (Zealott::Zealotts.size() >= 20 && enemyLocations.size() > 0)
+	{
+		for(int i =0; i < 20 ; i++)
+			AddOrder(new AttackOrder(BWAPI::Orders::Enum::Enum::AttackMove, *enemyStartLocations.begin(), UnitTypes::Protoss_Zealot));
+	}
+
 }
 
 
@@ -117,9 +174,18 @@ MasterOrder::MasterOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position positio
 
 BuildOrder::BuildOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position, UnitType unitType) : MasterOrder(type, position)
 {
+	m_position = position;
+}
+
+TrainOrder::TrainOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position, UnitType unitType) : MasterOrder(type, position)
+{
 	m_unitType = unitType;
 }
 
+AttackOrder::AttackOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position, BWAPI::UnitType unitType) : MasterOrder(type, position)
+{
+	m_unitType = unitType;
+}
 
 //Use a UnitType combined to its TilePosition to get the Position corresponding to its center
 BWAPI::Position Master::ConvertTilePosition(const BWAPI::TilePosition tilePosition, const BWAPI::UnitType unitType)

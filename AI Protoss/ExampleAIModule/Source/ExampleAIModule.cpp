@@ -5,12 +5,15 @@
 #include "../SupplyBuilder.h"
 #include "../Pylon.h"
 #include "../SupplyBuilder.h"
+#include "../GateWay.h"
+#include "../Zealott.h"
 
 using namespace BWAPI;
 using namespace Filter;
 
 void ExampleAIModule::onStart()
 {
+	Broodwar->setLocalSpeed(10);
 	Master::Init();
 
 	for (auto unit : Broodwar->self()->getUnits())
@@ -111,6 +114,16 @@ void ExampleAIModule::onFrame()
 	  p->Update();
   }
 
+  for(Gateway* g : Gateway::Gateways)
+  {
+	  g->Update();
+  }
+
+  for (Zealott* z : Zealott::Zealotts)
+  {
+	  z->Update();
+  }
+
   /*for (SupplyBuilder* s : SupplyBuilder::SupplyBuilders)
   {
 	  s->Update();
@@ -187,9 +200,10 @@ void ExampleAIModule::onNukeDetect(BWAPI::Position target)
 
 void ExampleAIModule::onUnitDiscover(BWAPI::Unit unit)
 {
-	if (unit->getType().isBuilding())
+	if (unit->getType().isBuilding() && unit->getPlayer()->isEnemy(Broodwar->self()))
 	{
 		Master::InformEnemyBaseLocation(unit->getPosition());
+		Master::enemyStartLocations.insert(unit->getPosition());
 	}
 
 }
@@ -239,9 +253,11 @@ void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
 		  else if (unit->getType() == UnitTypes::Protoss_Gateway)
 		  {
 			  Master::waitGatewayCount--;
+			  Gateway::Gateways.push_back(new Gateway(unit));
 		  }
+		  else if (unit->getType() == UnitTypes::Protoss_Zealot)
+			  Zealott::Zealotts.push_back(new Zealott(unit));
 	  }
-
   }
 }
 

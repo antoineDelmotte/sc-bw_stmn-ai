@@ -67,24 +67,24 @@ void Worker::Update()
 	{
 		if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol)) != NULL)
 		{
-			//if (IsTheNearest(masterOrder->m_position, Workers))
-			//{
+			if (IsTheNearest(masterOrder->m_position, Workers))
+			{
 				m_unit->move(masterOrder->m_position);
 				Master::TakeOrder(masterOrder);
 				isScouting = true;
 				lastOrder = masterOrder;
-				Broodwar->sendText("Worker -- Scouting", ((BuildOrder*)masterOrder)->m_unitType);
-			//}
+				Broodwar->sendText("Worker -- Scouting");
+			}
 		}
 		else if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding)) != NULL)
 		{
-			//if (IsTheNearest(masterOrder->m_position, Workers))
-			//{
+			if (IsTheNearest(masterOrder->m_position, Workers))
+			{
 				m_unit->build(((BuildOrder*)masterOrder)->m_unitType, BWAPI::TilePosition(masterOrder->m_position));
 				Master::TakeOrder(masterOrder);
 				lastOrder = masterOrder;
-				Broodwar->sendText("Worker -- Building", ((BuildOrder*)masterOrder)->m_unitType);
-			//}
+				Broodwar->sendText("Worker -- Building");
+			}
 		}
 	}
     
