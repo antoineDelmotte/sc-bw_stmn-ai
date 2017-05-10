@@ -21,7 +21,7 @@ struct BuildOrder : public MasterOrder
 };
 
 
-class Master
+static class Master
 {
 public:
 
@@ -29,6 +29,8 @@ public:
 	static std::set<BWAPI::Position> allStartLocations;	// All the starting positions
 	static std::set<BWAPI::Position> enemyStartLocations;	// Starting positions occupied by enemies
 	static std::set<BWAPI::Position> otherStartLocations;	// Starting positions that are not occupied by me (but maybe by enemies)
+	static std::set<BWAPI::Position> Master::enemyLocations;
+
 	static BWAPI::Position personalStartLocation;		// My start position
 
 	static MasterOrder* FindOrder(BWAPI::Orders::Enum::Enum order);
@@ -41,10 +43,12 @@ public:
 	static void AddOrder(MasterOrder* order);
 	static void InformEnemyBaseLocation(BWAPI::Position position);
 
-	Master();
 
-	void Update();
-	~Master();
+	static int waitPylonCount;
+	static int waitGatewayCount;
+
+	static void Init();
+	static void Update();
 };
 
 

@@ -9,11 +9,17 @@ using namespace Filter;
 
 std::set<BWAPI::Position> Master::allStartLocations;	// All the starting positions
 std::set<BWAPI::Position> Master::enemyStartLocations;	// Starting positions occupied by enemies
+
 std::set<BWAPI::Position> Master::otherStartLocations;	// Starting positions that are not occupied by me (but maybe by enemies)
 BWAPI::Position Master::personalStartLocation;		// My start position
 
+std::set<BWAPI::Position> Master::enemyLocations;
 
 std::vector<MasterOrder*> Master::Orders;
+
+int Master::waitPylonCount = 0;
+int Master::waitGatewayCount = 0;
+
 //Find order and delete it from the list
 MasterOrder* Master::FindOrder(BWAPI::Orders::Enum::Enum type)
 {
@@ -29,10 +35,9 @@ MasterOrder* Master::FindOrder(BWAPI::Orders::Enum::Enum type)
 }
 
 
-Master::Master()
+void Master::Init()
 {
 	fillStartingLocations();
-	AddOrder(new MasterOrder(BWAPI::Orders::Enum::Enum::AIPatrol, *allStartLocations.begin()));
 }
 
 
@@ -49,15 +54,16 @@ void Master::AddOrder(MasterOrder* order)
 
 void Master::InformEnemyBaseLocation(BWAPI::Position position)
 {
-	enemyStartLocations.insert(position);
+	enemyLocations.insert(position);
 }
 
-bool waitPylon = false;
-bool waitGateway = false;
+
+int enemyStartLocationsChecked = 0;
 void Master::Update()
 { 
 	Broodwar << "Nb workers : " << Worker::Workers.size() << std::endl;
 
+<<<<<<< HEAD
 	if (Worker::Workers.size() < 8 && SupplyBuilder::SupplyBuilders.size() > 0)
 	{
 		if ((Broodwar->self()->gas() >= UnitTypes::Protoss_Probe.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Probe.mineralPrice()))
@@ -69,15 +75,39 @@ void Master::Update()
 	}
 
 	if (Worker::Workers.size() == 8 && SupplyBuilder::SupplyBuilders.size() > 0)
+=======
+	bool needScouting = true;
+	for (Worker* w : Worker::Workers)
 	{
-		if (!waitPylon && Pylon::Pylons.size() == 0)
+		if (w->isScouting)
+		{
+			needScouting = false;
+			break;
+		};
+	}
+
+	if (needScouting)
+	{
+		std::set<Position>::iterator it = enemyStartLocations.begin();
+		std::advance(it, enemyStartLocationsChecked);
+
+		AddOrder(new MasterOrder(BWAPI::Orders::Enum::Enum::AIPatrol, *it));
+		enemyStartLocationsChecked = (enemyStartLocationsChecked+1)% enemyStartLocations.size();
+		Broodwar->sendText("SCOUT ORDER");
+	}
+
+
+	if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
+>>>>>>> 72b3b68f53b4a236e24d80124bfeba525fa53950
+	{
+		if (waitPylonCount == 0 && Pylon::Pylons.size() == 0)
 		{
 			if ((Broodwar->self()->gas() >= UnitTypes::Protoss_Pylon.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Pylon.mineralPrice()))
 			{
 				Broodwar << "Nb workers : " << Worker::Workers.size() << std::endl;
 				Broodwar << "Building PYLON" << std::endl;
 				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
-				waitPylon = true;
+				waitPylonCount++;
 			}
 		}
 	}
@@ -90,18 +120,23 @@ void Master::Update()
 			Broodwar << "Building peon : 2nd pass ! " << std::endl;
 			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::Train, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Probe, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Enum::Protoss_Probe));
 		}
+<<<<<<< HEAD
 	}
 
 	if (Worker::Workers.size() >= 10 && SupplyBuilder::SupplyBuilders.size() > 0)
 	{
 		if (!waitGateway && Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted())
 		{
+=======
+		else if (waitGatewayCount == 0 && Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted())
+		{	
+>>>>>>> 72b3b68f53b4a236e24d80124bfeba525fa53950
 			if (Broodwar->self()->gas() >= UnitTypes::Protoss_Gateway.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Gateway.mineralPrice())
 			{
 				Broodwar << "Nb workers : " << Worker::Workers.size() << std::endl;
 				Broodwar << "Building GATEWAY ! " << std::endl;
 				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Gateway));
-				waitGateway = true;
+				waitGatewayCount ++;
 			}
 		}
 	}
@@ -110,9 +145,6 @@ void Master::Update()
 
 }
 
-Master::~Master()
-{
-}
 
 MasterOrder::MasterOrder(BWAPI::Orders::Enum::Enum type, BWAPI::Position position)
 {

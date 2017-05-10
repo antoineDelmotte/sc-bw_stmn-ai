@@ -30,5 +30,6 @@ public:
 
 	BWAPI::Unit m_unit;
 	MasterOrder* lastOrder = NULL;
+	bool isScouting;
 };
 
