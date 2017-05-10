@@ -58,10 +58,10 @@ void Master::InformEnemyBaseLocation(BWAPI::Position position)
 }
 
 
-int enemyStartLocationsChecked = 0;
+int enemyStartLocationsChecked = 2;
 void Master::Update()
 {
-
+	fillStartingLocations();
 	bool needScouting = true;
 	for (Worker* w : Worker::Workers)
 	{
@@ -72,14 +72,15 @@ void Master::Update()
 		};
 	}
 
-	if (needScouting)
+	if (needScouting && Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol) == NULL)
 	{
-		std::set<Position>::iterator it = enemyStartLocations.begin();
+		std::set<Position>::iterator it = otherStartLocations.begin();
 		std::advance(it, enemyStartLocationsChecked);
 
 		AddOrder(new MasterOrder(BWAPI::Orders::Enum::Enum::AIPatrol, *it));
-		enemyStartLocationsChecked = (enemyStartLocationsChecked+1)% enemyStartLocations.size();
-		Broodwar->sendText("SCOUT ORDER");
+		enemyStartLocationsChecked = (enemyStartLocationsChecked+1)% (otherStartLocations.size());
+		Broodwar->sendText("SCOUT ORDER : ");
+		Broodwar->sendText((std::to_string(enemyStartLocationsChecked)).c_str());
 	}
 
 
@@ -178,6 +179,7 @@ void Master::fillStartingLocations()
 			if (!IsPositionValid(personalStartLocation))
 			{
 				personalStartLocation = ConvertTilePosition(tp, BWAPI::UnitTypes::Special_Start_Location);
+				Broodwar->sendText("PERSONNAL POSITION");
 			}
 		}
 		// Store the other starting locations
@@ -195,6 +197,7 @@ void Master::fillStartingLocations()
 		{
 			const BWAPI::Position enemyPosition = ConvertTilePosition(enemyTilePosition, BWAPI::UnitTypes::Special_Start_Location);
 			enemyStartLocations.insert(enemyPosition);
+			Broodwar->sendText("ENNEMY POSITION");
 		}
 	}
 }
