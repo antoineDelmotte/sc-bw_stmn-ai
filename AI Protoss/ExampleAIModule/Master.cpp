@@ -140,10 +140,26 @@ void Master::Update()
 				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Forge, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Forge));
 				waitForgeCount++;
 			}
-			else if (Forge::Forges.size() > 0 && Zealott::Zealotts.size()%5 == 0 && (Master::canIBuildThisUnit(UnitTypes::Protoss_Photon_Cannon)))
+			else if (Forge::Forges.size() > 0 && (PhotonCanon::PhotonCanons.size() == 0 || Zealott::Zealotts.size()%5 == 0) && (Master::canIBuildThisUnit(UnitTypes::Protoss_Photon_Cannon)))
 			{
 				Broodwar->sendText("PHOTON CANNON ORDER");
-				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Photon_Cannon, Pylon::Pylons[rand()% Pylon::Pylons.size()]->m_unit->getTilePosition())), UnitTypes::Protoss_Photon_Cannon));
+				BWAPI::TilePosition pos;
+
+
+			/*	if (enemyStartLocations.size() > 0)
+				{
+					for (int i = 0; i < Pylon::Pylons.size(); i++)
+					{
+						if (!Master::IsTilePositionValid(pos) || Pylon::Pylons[i]->m_unit->getTilePosition().getDistance(TilePosition(*enemyStartLocations.begin())) < pos.getDistance(TilePosition(*enemyStartLocations.begin())))
+						{
+							pos = Pylon::Pylons[i]->m_unit->getTilePosition();
+						}
+					}
+					AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Photon_Cannon, pos)), UnitTypes::Protoss_Photon_Cannon));
+				}
+				else*/
+					AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Photon_Cannon, Pylon::Pylons[rand()% Pylon::Pylons.size()]->m_unit->getTilePosition())), UnitTypes::Protoss_Photon_Cannon));
+				
 				waitPhotonCanonCount++;
 			}
 		}
