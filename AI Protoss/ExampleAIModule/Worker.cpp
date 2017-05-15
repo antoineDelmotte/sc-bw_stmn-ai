@@ -68,34 +68,45 @@ void Worker::Update()
 		isScouting = false;
 	}
 
-	MasterOrder* masterOrder;
+	MasterOrder* masterOrder = NULL;
 	if ((m_unit->isInterruptible()))
 	{
-		masterOrder = lastOrder != NULL ? lastOrder : Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol);
+		bool followLastOrder = false;
+
+		if (lastOrder != NULL)
+		{
+			followLastOrder = true;
+			masterOrder = lastOrder;
+		}
+
+		if (masterOrder == NULL)
+			masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol);
 
 		if (masterOrder == NULL)
 			masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding);
 
 		if (masterOrder != NULL && masterOrder->m_type == BWAPI::Orders::Enum::Enum::AIPatrol)
 		{
-			if (IsTheNearest(masterOrder->m_position, Workers))
+			if (!followLastOrder && IsTheNearest(masterOrder->m_position, Workers))
 			{
-				m_unit->move(masterOrder->m_position);
 				Master::TakeOrder(masterOrder);
 				isScouting = true;
 				lastOrder = masterOrder;
 				Broodwar->sendText("Worker -- Scouting");
 			}
+
+			m_unit->move(masterOrder->m_position);
 		}
 		else if (masterOrder != NULL && masterOrder->m_type == BWAPI::Orders::Enum::Enum::PlaceBuilding && Master::canIBuildThisUnit(((BuildOrder*)masterOrder)->m_unitType))
 		{
-			if (IsTheNearest(masterOrder->m_position, Workers))
+			if (!followLastOrder && IsTheNearest(masterOrder->m_position, Workers))
 			{
-				m_unit->build(((BuildOrder*)masterOrder)->m_unitType, BWAPI::TilePosition(masterOrder->m_position));
 				Master::TakeOrder(masterOrder);
 				lastOrder = masterOrder;
 				Broodwar->sendText("Worker -- Building");
 			}
+
+			m_unit->build(((BuildOrder*)masterOrder)->m_unitType, BWAPI::TilePosition(masterOrder->m_position));
 		}
 	}
     
@@ -135,6 +146,7 @@ void Worker::Update()
 			if (!m_unit->isConstructing())
 			{
 				lastOrder = NULL;
+				Broodwar->sendText("Worker -- Stop building");
 			}
 		}
 	}
