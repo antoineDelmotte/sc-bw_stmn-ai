@@ -71,7 +71,12 @@ void Worker::Update()
 	MasterOrder* masterOrder;
 	if ((m_unit->isInterruptible()))
 	{
-		if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol)) != NULL)
+		masterOrder = lastOrder != NULL ? lastOrder : Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol);
+
+		if (masterOrder == NULL)
+			masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding);
+
+		if (masterOrder != NULL && masterOrder->m_type == BWAPI::Orders::Enum::Enum::AIPatrol)
 		{
 			if (IsTheNearest(masterOrder->m_position, Workers))
 			{
@@ -82,7 +87,7 @@ void Worker::Update()
 				Broodwar->sendText("Worker -- Scouting");
 			}
 		}
-		else if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding)) != NULL && Master::canIBuildThisUnit(((BuildOrder*)masterOrder)->m_unitType))
+		else if (masterOrder != NULL && masterOrder->m_type == BWAPI::Orders::Enum::Enum::PlaceBuilding && Master::canIBuildThisUnit(((BuildOrder*)masterOrder)->m_unitType))
 		{
 			if (IsTheNearest(masterOrder->m_position, Workers))
 			{

@@ -93,6 +93,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Assimilator.cpp" />
     <ClCompile Include="Gateway.cpp" />
     <ClCompile Include="Master.cpp" />
     <ClCompile Include="Pylon.cpp" />
@@ -107,6 +108,7 @@
     <ClCompile Include="Zealott.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Assimilator.h" />
     <ClInclude Include="Gateway.h" />
     <ClInclude Include="Master.h" />
     <ClInclude Include="Pylon.h" />
