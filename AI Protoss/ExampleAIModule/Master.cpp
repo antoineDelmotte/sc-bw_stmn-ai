@@ -143,7 +143,7 @@ void Master::Update()
 			else if (Forge::Forges.size() > 0 && Zealott::Zealotts.size()%5 == 0 && (Master::canIBuildThisUnit(UnitTypes::Protoss_Photon_Cannon)))
 			{
 				Broodwar->sendText("PHOTON CANNON ORDER");
-				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Photon_Cannon, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Photon_Cannon));
+				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Photon_Cannon, Pylon::Pylons[rand()% Pylon::Pylons.size()]->m_unit->getTilePosition())), UnitTypes::Protoss_Photon_Cannon));
 				waitPhotonCanonCount++;
 			}
 		}
