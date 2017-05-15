@@ -44,7 +44,7 @@ void Worker::Update()
 	if (!m_unit->exists())
 	{
     	Worker::Workers.erase(std::find(Worker::Workers.begin(), Worker::Workers.end(), this));
-		if (lastOrder != NULL &&( lastOrder->m_type != BWAPI::Orders::Enum::Enum::AIPatrol || Master::enemyStartLocations.size() == 0 ))
+		if (lastOrder != NULL)
 		{
 			Master::AddOrder(lastOrder);
 		} 
@@ -93,9 +93,11 @@ void Worker::Update()
 				isScouting = true;
 				lastOrder = masterOrder;
 				Broodwar->sendText("Worker -- Scouting");
+				followLastOrder = true;
 			}
 
-			m_unit->move(masterOrder->m_position);
+			if(followLastOrder)
+				m_unit->move(masterOrder->m_position);
 		}
 		else if (masterOrder != NULL && masterOrder->m_type == BWAPI::Orders::Enum::Enum::PlaceBuilding && Master::canIBuildThisUnit(((BuildOrder*)masterOrder)->m_unitType))
 		{
@@ -104,8 +106,10 @@ void Worker::Update()
 				Master::TakeOrder(masterOrder);
 				lastOrder = masterOrder;
 				Broodwar->sendText("Worker -- Building");
+				followLastOrder = true;
 			}
 
+		if (followLastOrder)
 			m_unit->build(((BuildOrder*)masterOrder)->m_unitType, BWAPI::TilePosition(masterOrder->m_position));
 		}
 	}
@@ -134,7 +138,7 @@ void Worker::Update()
 	{
 		if (lastOrder->m_type == BWAPI::Orders::Enum::Enum::AIPatrol)
 		{
-			if (m_unit->getPosition().getDistance(lastOrder->m_position) < 1) //Considere we finish the Order
+			if (m_unit->getPosition().getDistance(lastOrder->m_position) < 5) //Considere we finish the Order
 			{
 				lastOrder = NULL;
 				Broodwar->sendText("Worker -- Stop scouting");

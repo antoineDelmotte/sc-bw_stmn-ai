@@ -1,5 +1,7 @@
-﻿  Zealott.cpp
-D:\1. Travaux en cours\IA Starcraft\AI Protoss\include\../ExampleAIModule/Master.h(70): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared
+﻿  Master.cpp
+d:\1. travaux en cours\ia starcraft\ai protoss\exampleaimodule\Master.h(72): warning C4091: 'static ' : ignored on left of 'Master' when no variable is declared
+Master.cpp(34): warning C4018: '<' : signed/unsigned mismatch
+Master.cpp(49): warning C4018: '<' : signed/unsigned mismatch
      Creating library Release\ExampleAIModule.lib and object Release\ExampleAIModule.exp
   Generating code
   Finished generating code

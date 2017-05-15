@@ -62,6 +62,8 @@ public:
 	static int waitPylonCount;
 	static int waitGatewayCount;
 	static int waitAssimilatorCount;
+	static int waitForgeCount;
+	static int waitPhotonCanonCount;
 
 	static void Init();
 	static void Update();

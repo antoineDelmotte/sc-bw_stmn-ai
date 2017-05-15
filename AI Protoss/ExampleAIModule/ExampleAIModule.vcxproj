@@ -94,8 +94,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assimilator.cpp" />
+    <ClCompile Include="Forge.cpp" />
     <ClCompile Include="Gateway.cpp" />
     <ClCompile Include="Master.cpp" />
+    <ClCompile Include="PhotonCanon.cpp" />
     <ClCompile Include="Pylon.cpp" />
     <ClCompile Include="Source\Dll.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files %28x86%29\BWAPI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -109,8 +111,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assimilator.h" />
+    <ClInclude Include="Forge.h" />
     <ClInclude Include="Gateway.h" />
     <ClInclude Include="Master.h" />
+    <ClInclude Include="PhotonCanon.h" />
     <ClInclude Include="Pylon.h" />
     <ClInclude Include="Source\ExampleAIModule.h" />
     <ClInclude Include="StarcraftUnit.h" />

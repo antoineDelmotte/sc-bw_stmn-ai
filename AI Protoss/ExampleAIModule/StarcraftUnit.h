@@ -29,7 +29,9 @@ public:
 	virtual void Update() = 0;
 
 	BWAPI::Unit m_unit;
-	MasterOrder* lastOrder = NULL;
 	bool isScouting;
+
+protected :
+	MasterOrder* lastOrder = NULL;
 };
 

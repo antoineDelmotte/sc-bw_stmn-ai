@@ -8,6 +8,8 @@
 #include "../GateWay.h"
 #include "../Zealott.h"
 #include "../Assimilator.h"
+#include "../Forge.h"
+#include "../PhotonCanon.h"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -130,7 +132,15 @@ void ExampleAIModule::onFrame()
 	  s->Update();
   }
 
+  for (PhotonCanon* p : PhotonCanon::PhotonCanons)
+  {
+	  p->Update();
+  }
 
+  for (Forge* f : Forge::Forges)
+  {
+	  f->Update();
+  }
 
   // Iterate through all the units that we own
  /* for (auto &u : Broodwar->self()->getUnits())
@@ -262,6 +272,16 @@ void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
 		  {
 			  Master::waitAssimilatorCount--;
 			  Assimilator::Assimilators.push_back(new Assimilator(unit));
+		  }
+		  else if (unit->getType() == UnitTypes::Protoss_Forge)
+		  {
+			  Forge::Forges.push_back(new Forge(unit));
+			  Master::waitForgeCount--;
+		  }
+		  else if (unit->getType() == UnitTypes::Protoss_Photon_Cannon)
+		  {
+			  PhotonCanon::PhotonCanons.push_back(new PhotonCanon(unit));
+			  Master::waitPhotonCanonCount--;
 		  }
 	  }
   }

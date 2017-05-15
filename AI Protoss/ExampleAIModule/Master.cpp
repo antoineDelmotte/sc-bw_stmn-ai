@@ -6,6 +6,8 @@
 #include "Gateway.h"
 #include "Zealott.h"
 #include "Assimilator.h"
+#include "Forge.h"
+#include "PhotonCanon.h"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -23,6 +25,8 @@ std::vector<MasterOrder*> Master::Orders;
 int Master::waitPylonCount = 0;
 int Master::waitGatewayCount = 0;
 int Master::waitAssimilatorCount = 0;
+int Master::waitForgeCount = 0;
+int Master::waitPhotonCanonCount = 0;
 
 //Find order and delete it from the list
 MasterOrder* Master::FindOrder(BWAPI::Orders::Enum::Enum type)
@@ -75,7 +79,7 @@ void Master::InformEnemyBaseLocation(BWAPI::Position position)
 }
 
 
-int enemyStartLocationsChecked = 2;
+int enemyStartLocationsChecked = 0;
 void Master::Update()
 {
 	fillStartingLocations();
@@ -100,79 +104,93 @@ void Master::Update()
 		Broodwar->sendText((std::to_string(enemyStartLocationsChecked)).c_str());
 	}
 
-	if (waitAssimilatorCount > 0 || waitGatewayCount > 0 || waitPylonCount > 0)
-		return;
-
-
-	if (Worker::Workers.size() < 10 && FindOrders(BWAPI::Orders::Enum::Enum::Train).size() < 5)
+	//A L ATTAQUE !!! CHARGEZ !!!!!
+	if (Zealott::Zealotts.size() >= 20 && enemyLocations.size() > 0)
 	{
-		AddOrder(new TrainOrder(BWAPI::Orders::Enum::Enum::Train, BWAPI::Position(0,0), UnitTypes::Protoss_Probe));
-		return;
+		for (int i = 0; i < 20; i++)
+			AddOrder(new AttackOrder(BWAPI::Orders::Enum::Enum::AttackMove, *enemyStartLocations.begin(), UnitTypes::Protoss_Zealot));
 	}
 
 
-	if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
+	if (!(waitAssimilatorCount > 0 || waitGatewayCount > 0 || waitPylonCount > 0 || waitForgeCount > 0 || waitPhotonCanonCount > 0))
 	{
-		if ((Pylon::Pylons.size() == 0 ||  Broodwar->self()->supplyTotal() - Broodwar->self()->supplyUsed() < 2) && (Master::canIBuildThisUnit(UnitTypes::Protoss_Pylon)))
+		if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
 		{
-			Broodwar->sendText("PYLON ORDER");
-			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
-			waitPylonCount++;
-		}
-		else if ( Gateway::Gateways.size() <= 1 &&  Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted() && (Master::canIBuildThisUnit(UnitTypes::Protoss_Gateway)))
-		{	
-			Broodwar->sendText("GATEWAY ORDER");
-			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Gateway));
-			waitGatewayCount ++;
-		}
-		/*else if (Assimilator::Assimilators.size() == 0 && Master::canIBuildThisUnit(UnitTypes::Protoss_Assimilator))
-		{
-			Broodwar->sendText("ASSIMILATOR ORDER");
-			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Assimilator, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Assimilator));
-			waitAssimilatorCount++;
-		}*/
-	}
-
-
-	if (Broodwar->self()->supplyTotal() > Broodwar->self()->supplyUsed() + UnitTypes::Protoss_Zealot.supplyRequired())
-	{
-		if (Gateway::Gateways.size() > 0 && Zealott::Zealotts.size() < 20)
-		{
-			bool trainZealot = false;
-			for (MasterOrder* to : FindOrders(BWAPI::Orders::Enum::Enum::Train))
-			{
-				if (((TrainOrder*)to)->m_unitType == UnitTypes::Protoss_Zealot)
-				{
-					trainZealot = true;
-					break;
-				}
-			}
-
-			if (!trainZealot && (Master::canIBuildThisUnit(UnitTypes::Protoss_Zealot)))
-			{
-				Broodwar->sendText("ZEALOT ORDER");
-				AddOrder(new TrainOrder(BWAPI::Orders::Enum::Enum::Train, (*Gateway::Gateways.begin())->m_unit->getPosition(), UnitTypes::Protoss_Zealot));
-			}
-		}
-	}
-	else if (Worker::Workers.size() > 0)
-	{
-		if (waitPylonCount == 0)
-		{
-			if (Master::canIBuildThisUnit(UnitTypes::Protoss_Pylon))
+			if ((Pylon::Pylons.size() == 0 || Broodwar->self()->supplyTotal() - Broodwar->self()->supplyUsed() < 5) && (Master::canIBuildThisUnit(UnitTypes::Protoss_Pylon)))
 			{
 				Broodwar->sendText("PYLON ORDER");
 				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
 				waitPylonCount++;
 			}
+			else if (Gateway::Gateways.size() <= 1 && Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted() && (Master::canIBuildThisUnit(UnitTypes::Protoss_Gateway)))
+			{
+				Broodwar->sendText("GATEWAY ORDER");
+				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Gateway));
+				waitGatewayCount++;
+			}
+			/*else if (Assimilator::Assimilators.size() == 0 && Master::canIBuildThisUnit(UnitTypes::Protoss_Assimilator))
+			{
+				Broodwar->sendText("ASSIMILATOR ORDER");
+				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Assimilator, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Assimilator));
+				waitAssimilatorCount++;
+			}*/
+			else if (Forge::Forges.size() == 0 && Pylon::Pylons.size() > 0 && (Master::canIBuildThisUnit(UnitTypes::Protoss_Forge)))
+			{
+				Broodwar->sendText("FORGE ORDER");
+				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Forge, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Forge));
+				waitForgeCount++;
+			}
+			else if (Forge::Forges.size() > 0 && Zealott::Zealotts.size()%5 == 0 && (Master::canIBuildThisUnit(UnitTypes::Protoss_Photon_Cannon)))
+			{
+				Broodwar->sendText("PHOTON CANNON ORDER");
+				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Photon_Cannon, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Photon_Cannon));
+				waitPhotonCanonCount++;
+			}
 		}
 	}
 
-	//A L ATTAQUE !!! CHARGEZ !!!!!
-	if (Zealott::Zealotts.size() >= 20 && enemyLocations.size() > 0)
+	if (!(waitAssimilatorCount > 0 || waitGatewayCount > 0 || waitPylonCount > 0 || waitForgeCount > 0 || waitPhotonCanonCount > 0))
 	{
-		for(int i =0; i < 20 ; i++)
-			AddOrder(new AttackOrder(BWAPI::Orders::Enum::Enum::AttackMove, *enemyStartLocations.begin(), UnitTypes::Protoss_Zealot));
+		if (Worker::Workers.size() < 10 && canIBuildThisUnit(UnitTypes::Protoss_Probe))
+		{
+			bool trainProbe = false;
+			for (MasterOrder* to : FindOrders(BWAPI::Orders::Enum::Enum::Train))
+			{
+				if (((TrainOrder*)to)->m_unitType == UnitTypes::Protoss_Probe)
+				{
+					trainProbe = true;
+					break;
+				}
+			}
+
+			if (!trainProbe)
+			{
+				AddOrder(new TrainOrder(BWAPI::Orders::Enum::Enum::Train, BWAPI::Position(0, 0), UnitTypes::Protoss_Probe));
+				Broodwar->sendText("PROBE ORDER");
+			}
+		}
+
+		else if (canIBuildThisUnit(UnitTypes::Protoss_Zealot))
+		{
+			if (Gateway::Gateways.size() > 0 && Zealott::Zealotts.size() < 20)
+			{
+				bool trainZealot = false;
+				for (MasterOrder* to : FindOrders(BWAPI::Orders::Enum::Enum::Train))
+				{
+					if (((TrainOrder*)to)->m_unitType == UnitTypes::Protoss_Zealot)
+					{
+						trainZealot = true;
+						break;
+					}
+				}
+
+				if (!trainZealot)
+				{
+					Broodwar->sendText("ZEALOT ORDER");
+					AddOrder(new TrainOrder(BWAPI::Orders::Enum::Enum::Train, (*Gateway::Gateways.begin())->m_unit->getPosition(), UnitTypes::Protoss_Zealot));
+				}
+			}
+		}
 	}
 
 }
