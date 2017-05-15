@@ -5,6 +5,7 @@
 #include "Pylon.h"
 #include "Gateway.h"
 #include "Zealott.h"
+#include "Assimilator.h"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -21,6 +22,7 @@ std::vector<MasterOrder*> Master::Orders;
 
 int Master::waitPylonCount = 0;
 int Master::waitGatewayCount = 0;
+int Master::waitAssimilatorCount = 0;
 
 //Find order and delete it from the list
 MasterOrder* Master::FindOrder(BWAPI::Orders::Enum::Enum type)
@@ -98,32 +100,37 @@ void Master::Update()
 		Broodwar->sendText((std::to_string(enemyStartLocationsChecked)).c_str());
 	}
 
+	if (waitAssimilatorCount > 0 || waitGatewayCount > 0 || waitPylonCount > 0)
+		return;
+
+
 	if (Worker::Workers.size() < 10 && FindOrders(BWAPI::Orders::Enum::Enum::Train).size() < 5)
 	{
 		AddOrder(new TrainOrder(BWAPI::Orders::Enum::Enum::Train, BWAPI::Position(0,0), UnitTypes::Protoss_Probe));
+		return;
 	}
 
 
 	if (Worker::Workers.size() > 0 && SupplyBuilder::SupplyBuilders.size() > 0)
 	{
-		if (waitPylonCount == 0 && Broodwar->self()->supplyTotal() - Broodwar->self()->supplyUsed() < 2 )
+		if ((Pylon::Pylons.size() == 0 ||  Broodwar->self()->supplyTotal() - Broodwar->self()->supplyUsed() < 2) && (Master::canIBuildThisUnit(UnitTypes::Protoss_Pylon)))
 		{
-			if ((Broodwar->self()->gas() >= UnitTypes::Protoss_Pylon.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Pylon.mineralPrice()))
-			{
-				Broodwar->sendText("PYLON ORDER");
-				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
-				waitPylonCount++;
-			}
+			Broodwar->sendText("PYLON ORDER");
+			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
+			waitPylonCount++;
 		}
-		else if (waitGatewayCount == 0 && Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted() && Gateway::Gateways.size() == 0 )
+		else if ( Gateway::Gateways.size() <= 1 &&  Pylon::Pylons.size() > 0 && Pylon::Pylons[0]->m_unit->isCompleted() && (Master::canIBuildThisUnit(UnitTypes::Protoss_Gateway)))
 		{	
-			if (Broodwar->self()->gas() >= UnitTypes::Protoss_Gateway.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Gateway.mineralPrice())
-			{
-				Broodwar->sendText("GATEWAY ORDER");
-				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Gateway));
-				waitGatewayCount ++;
-			}
+			Broodwar->sendText("GATEWAY ORDER");
+			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Gateway, Pylon::Pylons[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Gateway));
+			waitGatewayCount ++;
 		}
+		/*else if (Assimilator::Assimilators.size() == 0 && Master::canIBuildThisUnit(UnitTypes::Protoss_Assimilator))
+		{
+			Broodwar->sendText("ASSIMILATOR ORDER");
+			AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Assimilator, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Assimilator));
+			waitAssimilatorCount++;
+		}*/
 	}
 
 
@@ -141,7 +148,7 @@ void Master::Update()
 				}
 			}
 
-			if (!trainZealot && ((Broodwar->self()->gas() >= UnitTypes::Protoss_Zealot.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Zealot.mineralPrice())))
+			if (!trainZealot && (Master::canIBuildThisUnit(UnitTypes::Protoss_Zealot)))
 			{
 				Broodwar->sendText("ZEALOT ORDER");
 				AddOrder(new TrainOrder(BWAPI::Orders::Enum::Enum::Train, (*Gateway::Gateways.begin())->m_unit->getPosition(), UnitTypes::Protoss_Zealot));
@@ -152,7 +159,7 @@ void Master::Update()
 	{
 		if (waitPylonCount == 0)
 		{
-			if ((Broodwar->self()->gas() >= UnitTypes::Protoss_Pylon.gasPrice() && Broodwar->self()->minerals() >= UnitTypes::Protoss_Pylon.mineralPrice()))
+			if (Master::canIBuildThisUnit(UnitTypes::Protoss_Pylon))
 			{
 				Broodwar->sendText("PYLON ORDER");
 				AddOrder(new BuildOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding, Position(Broodwar->getBuildLocation(UnitTypes::Protoss_Pylon, SupplyBuilder::SupplyBuilders[0]->m_unit->getTilePosition())), UnitTypes::Protoss_Pylon));
@@ -271,4 +278,10 @@ void Master::fillStartingLocations()
 			Broodwar->sendText("ENNEMY POSITION");
 		}
 	}
+}
+
+
+bool Master::canIBuildThisUnit(UnitType unit) {
+	bool costSupply = (unit.isBuilding() && Worker::Workers.size()>0) ? true : Broodwar->self()->supplyUsed() + unit.supplyRequired() < Broodwar->self()->supplyTotal() ? true : false;
+	return costSupply && Broodwar->self()->minerals() >= unit.mineralPrice() && Broodwar->self()->gas() >= unit.gasPrice();
 }

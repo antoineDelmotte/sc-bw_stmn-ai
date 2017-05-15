@@ -61,9 +61,12 @@ public:
 
 	static int waitPylonCount;
 	static int waitGatewayCount;
+	static int waitAssimilatorCount;
 
 	static void Init();
 	static void Update();
+
+	static bool canIBuildThisUnit(BWAPI::UnitType unit);
 };
 
 

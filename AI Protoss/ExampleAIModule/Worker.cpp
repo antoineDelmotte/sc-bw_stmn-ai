@@ -69,7 +69,7 @@ void Worker::Update()
 	}
 
 	MasterOrder* masterOrder;
-	if ((m_unit->isInterruptible()) && lastOrder == NULL)
+	if ((m_unit->isInterruptible()))
 	{
 		if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::AIPatrol)) != NULL)
 		{
@@ -82,7 +82,7 @@ void Worker::Update()
 				Broodwar->sendText("Worker -- Scouting");
 			}
 		}
-		else if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding)) != NULL)
+		else if ((masterOrder = Master::FindOrder(BWAPI::Orders::Enum::Enum::PlaceBuilding)) != NULL && Master::canIBuildThisUnit(((BuildOrder*)masterOrder)->m_unitType))
 		{
 			if (IsTheNearest(masterOrder->m_position, Workers))
 			{
@@ -94,7 +94,7 @@ void Worker::Update()
 		}
 	}
     
-	if (m_unit->isIdle() && lastOrder == NULL) 	// if our worker is idle
+	if (m_unit->isIdle()) 	// if our worker is idle
 	{
 		// Order workers carrying a resource to return them to the center,
 		// otherwise find a mineral patch to harvest.

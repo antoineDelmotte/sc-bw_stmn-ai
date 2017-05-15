@@ -7,6 +7,7 @@
 #include "../SupplyBuilder.h"
 #include "../GateWay.h"
 #include "../Zealott.h"
+#include "../Assimilator.h"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -16,7 +17,7 @@ void ExampleAIModule::onStart()
 	Broodwar->setLocalSpeed(10);
 	Master::Init();
 
-	for (auto unit : Broodwar->self()->getUnits())
+	/*for (auto unit : Broodwar->self()->getUnits())
 	{
 		if (unit->getType().isWorker())
 		{
@@ -26,7 +27,7 @@ void ExampleAIModule::onStart()
 		{
 			SupplyBuilder::SupplyBuilders.push_back(new SupplyBuilder(unit));
 		}
-	}
+	}*/
 
 
   // Hello World!
@@ -257,6 +258,11 @@ void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
 		  }
 		  else if (unit->getType() == UnitTypes::Protoss_Zealot)
 			  Zealott::Zealotts.push_back(new Zealott(unit));
+		  else if (unit->getType() == UnitTypes::Protoss_Assimilator)
+		  {
+			  Master::waitAssimilatorCount--;
+			  Assimilator::Assimilators.push_back(new Assimilator(unit));
+		  }
 	  }
   }
 }
